@@ -105,8 +105,11 @@ def draw_tile(row, line, tile_type):
         #type 4 is a black background
         pygame.draw.rect(DISPLAY_SURFACE, BLACK, (left, top, TILE_SIZE, TILE_SIZE))
     if tile_type == "8":
-        #type 8 is a bridge
+        #type 8 are bridges
         pygame.draw.rect(DISPLAY_SURFACE, BROWN, (left, top, TILE_SIZE, TILE_SIZE))
+    if title_type == "9":
+        #type 9 is a white background
+        pygame.draw.rect(DISPLAY_SURFACE, WHITE, (left, top, TILE_SIZE, TILE_SIZE))
         
 def draw_map(game_map):
     DISPLAY_SURFACE.fill(GREEN)
