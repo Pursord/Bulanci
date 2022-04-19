@@ -14,6 +14,8 @@ DARK_TURQUOISE = (3, 54, 73)
 GREEN = (3, 133, 5)
 RED = (214, 28, 8)
 GREY = (204, 195, 198)
+YELLOW = (255, 255, 0)
+PINK = (255, 51, 153)
 
 #constants for movement
 UP = 'up'
@@ -73,9 +75,13 @@ def main():
     pygame.display.set_caption("Bulanci ale tanci")
 
     game_map.generate_map(mapa)
-
+    player1 = Bulanek(1, 0, TILE_SIZE*2)
+    player2 = Bulanek(2, (TILE_SIZE*24+1), TILE_SIZE*2)
+    
     while True:
         draw_map(game_map)
+        draw_bulanek(player1)
+        draw_bulanek(player2)        
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
@@ -105,14 +111,11 @@ def draw_map(game_map):
             if game_map.map[row][line] != 0:
                 draw_tile(row, line, game_map.map[row][line])
                 
-def draw_bulanek(Bulanek):
-    top, left = (row * TILE_SIZE), (line * TILE_SIZE)
-    if tile_type == "5":
-        #type 5 is Bulanek A
-        pygame.draw.rect(DISPLAY_SURFACE, PINK, (left, top, TILE_SIZE, TILE_SIZE))
-    if title_type == "6":
-        #type 6 is Bulanek B
-        pygame.draw.rect(DISPLAY_SURFACE, YELLOW, (left, top, TILE_SIZE, TILE_SIZE))
+def draw_bulanek(bulanek):
+    if bulanek.player == 1:
+        pygame.draw.rect(DISPLAY_SURFACE, PINK, (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2))
+    if bulanek.player == 2:
+        pygame.draw.rect(DISPLAY_SURFACE, YELLOW, (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2))
 
 
 def terminate():
