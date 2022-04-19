@@ -47,7 +47,7 @@ class Map:
 
         given_file.close()
 
-class bulanek:
+class Bulanek:
     def __init__(self, player):
         self.player = player
         self.x_position = None
@@ -55,7 +55,7 @@ class bulanek:
         self.health = 3
         self.direction = UP
 
-class projectile:
+class Brojectile:
     def __init__(self, x, y, direction):
         self.x = x
         self.y = y
@@ -64,13 +64,15 @@ class projectile:
 def main():
     global FPS_CLOCK, DISPLAY_SURFACE, BASIC_FONT, BUTTONS
     
+    mapa = str(input("Kterou mapu chcete hrat?"))
+    
     pygame.init()
     game_map = Map()
     FPS_CLOCK = pygame.time.Clock()
     DISPLAY_SURFACE = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
     pygame.display.set_caption("Bulanci ale tanci")
 
-    game_map.generate_map("board.txt")
+    game_map.generate_map(mapa)
 
     while True:
         draw_map(game_map)
