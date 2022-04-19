@@ -110,6 +110,9 @@ def draw_tile(row, line, tile_type):
     if title_type == "9":
         #type 9 is a white background
         pygame.draw.rect(DISPLAY_SURFACE, WHITE, (left, top, TILE_SIZE, TILE_SIZE))
+    if title_type == "5":
+        #type 5 are teleporters
+        pygame.draw.rect(DISPLAY_SURFACE, DARK_TURQUOISE, (left, top, TILE_SIZE, TILE_SIZE))
         
 def draw_map(game_map):
     DISPLAY_SURFACE.fill(GREEN)
