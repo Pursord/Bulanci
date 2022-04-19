@@ -16,6 +16,7 @@ RED = (214, 28, 8)
 GREY = (204, 195, 198)
 YELLOW = (255, 255, 0)
 PINK = (255, 51, 153)
+BROWN = (150, 75, 0)
 
 #constants for movement
 UP = 'up'
