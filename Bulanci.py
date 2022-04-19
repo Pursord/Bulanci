@@ -64,7 +64,7 @@ class Brojectile:
 def main():
     global FPS_CLOCK, DISPLAY_SURFACE, BASIC_FONT, BUTTONS
     
-    mapa = str(input("Kterou mapu chcete hrat?"))
+    mapa = str(input("Kterou mapu chcete hrat?") + ".txt")
     
     pygame.init()
     game_map = Map()
@@ -106,5 +106,6 @@ def terminate():
     pygame.quit()
     sys.exit()
     
-if __name__ == '__main__':
+if _
+_name__ == '__main__':
     main()
