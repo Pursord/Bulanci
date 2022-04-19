@@ -102,7 +102,7 @@ def draw_map(game_map):
             if game_map.map[row][line] != 0:
                 draw_tile(row, line, game_map.map[row][line])
                 
-def draw_bulanek(Bulanek)
+def draw_bulanek(Bulanek):
     top, left = (row * TILE_SIZE), (line * TILE_SIZE)
     if tile_type == "5":
         #type 5 is Bulanek A
