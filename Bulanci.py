@@ -55,7 +55,7 @@ class Bulanek:
         self.health = 3
         self.direction = UP
 
-class Brojectile:
+class Projectile:
     def __init__(self, x, y, direction):
         self.x = x
         self.y = y
@@ -116,6 +116,5 @@ def terminate():
     pygame.quit()
     sys.exit()
     
-if _
-_name__ == '__main__':
+if __name__ == '__main__':
     main()
