@@ -94,6 +94,9 @@ def draw_tile(row, line, tile_type):
     if tile_type == "3":
         #type 3 are blocks where you can not stand
         pygame.draw.rect(DISPLAY_SURFACE, BRIGHT_BLUE, (left, top, TILE_SIZE, TILE_SIZE))
+    if tile_type == "4":
+        #type 4 is black background
+        pygame.draw.rect(DISPLAY_SURFACE, BLACK, (left, top, TILE_SIZE, TILE_SIZE))
 
 def draw_map(game_map):
     DISPLAY_SURFACE.fill(GREEN)
