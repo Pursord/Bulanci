@@ -48,10 +48,10 @@ class Map:
         given_file.close()
 
 class Bulanek:
-    def __init__(self, player):
+    def __init__(self, player, x, y):
         self.player = player
-        self.x_position = None
-        self.y_position  = None
+        self.x_position = x
+        self.y_position  = y
         self.health = 3
         self.direction = UP
 
@@ -91,7 +91,7 @@ def draw_tile(row, line, tile_type):
     if tile_type == "2":
         #type 2 are undestructible blocks
         pygame.draw.rect(DISPLAY_SURFACE, GREY, (left, top, TILE_SIZE, TILE_SIZE))
-    if title_type == "3":
+    if tile_type == "3":
         #type 3 are blocks where you can not stand
         pygame.draw.rect(DISPLAY_SURFACE, BLUE, (left, top, TILE_SIZE, TILE_SIZE))
 
