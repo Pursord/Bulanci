@@ -101,6 +101,16 @@ def draw_map(game_map):
         for line in range(game_map.map_width):
             if game_map.map[row][line] != 0:
                 draw_tile(row, line, game_map.map[row][line])
+                
+def draw_bulanek(Bulanek)
+    top, left = (row * TILE_SIZE), (line * TILE_SIZE)
+    if tile_type == "5":
+        #type 5 is Bulanek A
+        pygame.draw.rect(DISPLAY_SURFACE, PINK, (left, top, TILE_SIZE, TILE_SIZE))
+    if title_type == "6":
+        #type 6 is Bulanek B
+        pygame.draw.rect(DISPLAY_SURFACE, YELLOW, (left, top, TILE_SIZE, TILE_SIZE))
+
 
 def terminate():
     pygame.quit()
