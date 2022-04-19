@@ -89,6 +89,9 @@ def draw_tile(row, line, tile_type):
     if tile_type == "2":
         #type 2 are undestructible blocks
         pygame.draw.rect(DISPLAY_SURFACE, GREY, (left, top, TILE_SIZE, TILE_SIZE))
+    if title_type == "3":
+        #type 3 are blocks where you can not stand
+        pygame.draw.rect(DISPLAY_SURFACE, BLUE, (left, top, TILE_SIZE, TILE_SIZE))
 
 def draw_map(game_map):
     DISPLAY_SURFACE.fill(GREEN)
