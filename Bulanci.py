@@ -107,10 +107,10 @@ def draw_tile(row, line, tile_type):
     if tile_type == "8":
         #type 8 are bridges
         pygame.draw.rect(DISPLAY_SURFACE, BROWN, (left, top, TILE_SIZE, TILE_SIZE))
-    if title_type == "9":
+    if tile_type == "9":
         #type 9 is a white background
         pygame.draw.rect(DISPLAY_SURFACE, WHITE, (left, top, TILE_SIZE, TILE_SIZE))
-    if title_type == "5":
+    if tile_type == "5":
         #type 5 are teleporters
         pygame.draw.rect(DISPLAY_SURFACE, DARK_TURQUOISE, (left, top, TILE_SIZE, TILE_SIZE))
         
