@@ -56,6 +56,8 @@ class Bulanek:
         self.player = player
         self.x_position = x
         self.y_position = y
+        self.move_speed = 0
+        self.reload = 0
         self.health = 3
         self.direction = UP
 
@@ -90,6 +92,10 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
+        if player1.move_speed != 0:
+            player1.move_speed -= 1
+        if player2.move_speed != 0:
+            player2.move_speed -= 1
         handle_movement(player1, player2)
         
         pygame.display.update()
@@ -134,32 +140,36 @@ def draw_bulanek(bulanek):
         pygame.draw.rect(DISPLAY_SURFACE, YELLOW, (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2))
 
 def handle_movement(player1, player2):
-    speed = 4
+    speed = TILE_SIZE
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP]:
-        player2.direction = UP
-        player2.y_position -= speed
-    if keys[pygame.K_DOWN]:
-        player2.direction = DOWN
-        player2.y_position += speed
-    if keys[pygame.K_LEFT]:
-        player2.direction = LEFT
-        player2.x_position -= speed
-    if keys[pygame.K_RIGHT]:
-        player2.direction = RIGHT
-        player2.x_position += speed
-    if keys[pygame.K_w]:
-        player1.direction = UP
-        player1.y_position -= speed
-    if keys[pygame.K_s]:
-        player1.direction = DOWN
-        player1.y_position += speed
-    if keys[pygame.K_a]:
-        player1.direction = LEFT
-        player1.x_position -= speed
-    if keys[pygame.K_d]:
-        player1.direction = RIGHT
-        player1.x_position += speed    
+    if player2.move_speed == 0:
+        if keys[pygame.K_UP]:
+            player2.direction = UP
+            player2.y_position -= speed
+        if keys[pygame.K_DOWN]:
+            player2.direction = DOWN
+            player2.y_position += speed
+        if keys[pygame.K_LEFT]:
+            player2.direction = LEFT
+            player2.x_position -= speed
+        if keys[pygame.K_RIGHT]:
+            player2.direction = RIGHT
+            player2.x_position += speed
+        player2.move_speed = 5
+    if player1.move_speed == 0:
+        if keys[pygame.K_w]:
+            player1.direction = UP
+            player1.y_position -= speed
+        if keys[pygame.K_s]:
+            player1.direction = DOWN
+            player1.y_position += speed
+        if keys[pygame.K_a]:
+            player1.direction = LEFT
+            player1.x_position -= speed
+        if keys[pygame.K_d]:
+            player1.direction = RIGHT
+            player1.x_position += speed  
+        player1.move_speed = 5
     pass
 
 def terminate():
