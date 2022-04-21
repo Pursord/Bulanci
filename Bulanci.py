@@ -134,25 +134,31 @@ def draw_bulanek(bulanek):
         pygame.draw.rect(DISPLAY_SURFACE, YELLOW, (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2))
 
 def handle_movement(player1, player2):
-    speed = 3
-    delta_x = 0
-    delta_y = 0
+    speed = 4
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
+        player2.direction = UP
         player2.y_position -= speed
     if keys[pygame.K_DOWN]:
+        player2.direction = DOWN
         player2.y_position += speed
     if keys[pygame.K_LEFT]:
+        player2.direction = LEFT
         player2.x_position -= speed
     if keys[pygame.K_RIGHT]:
+        player2.direction = RIGHT
         player2.x_position += speed
     if keys[pygame.K_w]:
+        player1.direction = UP
         player1.y_position -= speed
     if keys[pygame.K_s]:
+        player1.direction = DOWN
         player1.y_position += speed
     if keys[pygame.K_a]:
+        player1.direction = LEFT
         player1.x_position -= speed
     if keys[pygame.K_d]:
+        player1.direction = RIGHT
         player1.x_position += speed    
     pass
 
