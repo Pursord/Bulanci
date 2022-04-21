@@ -172,6 +172,36 @@ def handle_movement(player1, player2):
         player1.move_speed = 5
     pass
 
+def projectile_movment(player1, player2, projectile1, projectile2):
+    speed_p = 100
+    if keys[pygame.K_c]:
+        if player1.direction == LEFT:
+            projectile1.direction = LEFT
+            projectile1.x_position -= speed_p
+        if player1.direction == RIGHT:
+            projectile1.direction = RIGHT 
+            projectile1.x_position += speed_p
+        if player1.direction == UP:
+            projectile1.direction = UP
+            projectile1.y_position -= speed_p
+        if player1.direction == DOWN:
+            projectile1.direction = DOWN
+            projectile1.y_position -= speed_p
+    if keys[pygame.K_QUESTION]:
+        if player2.direction == LEFT:
+            projectile2.direction = LEFT
+            projectile2.x_position -= speed_p
+        if player2.direction == RIGHT:
+            projectile2.direction = RIGHT
+            projectile2.x_position += speed_p
+        if player2.direction == UP:
+            projectile2.direction = UP
+            projectile2.y_position -= speed_p
+        if player2.direction == DOWN:
+            projectile2.direction = DOWN
+            projectile2.y_position -= speed_p
+    pass
+
 def terminate():
     pygame.quit()
     sys.exit()
