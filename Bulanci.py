@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import sys
 import random
+import time
 
 WINDOW_SIZE = 728
 TILE_SIZE = 28
@@ -37,14 +38,14 @@ class Map:
         self.map_height = 26
 
     def generate_map(self, file):
-        given_file = open(f'{file}', 'r')
+        given_file = open(file, 'r')
 
         lines = given_file.readlines()
 
         for line in lines:
             row = []
             for c in line:
-                if c.isdigit() == True:
+                if c.isdigit():
                     row.append(c)
             self.map.append(row)
 
@@ -54,7 +55,7 @@ class Bulanek:
     def __init__(self, player, x, y):
         self.player = player
         self.x_position = x
-        self.y_position  = y
+        self.y_position = y
         self.health = 3
         self.direction = UP
 
@@ -66,8 +67,11 @@ class Projectile:
 
 def main():
     global FPS_CLOCK, DISPLAY_SURFACE, BASIC_FONT, BUTTONS
-    
-    mapa = str(input("Kterou mapu chcete hrat?") + ".txt")
+
+    choice = input("Kterou mapu chcete hrat?")
+    if not choice:
+        choice = "Deadly_garden"
+    mapa = choice + ".txt"
     
     pygame.init()
     game_map = Map()
@@ -78,7 +82,7 @@ def main():
     game_map.generate_map(mapa)
     player1 = Bulanek(1, 0, TILE_SIZE*2)
     player2 = Bulanek(2, (TILE_SIZE*24+1), TILE_SIZE*2)
-    
+
     while True:
         draw_map(game_map)
         draw_bulanek(player1)
@@ -86,7 +90,7 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
-            handle_movement(player1, player2) 
+        handle_movement(player1, player2)
         
         pygame.display.update()
         FPS_CLOCK.tick(FPS)
@@ -129,7 +133,6 @@ def draw_bulanek(bulanek):
     if bulanek.player == 2:
         pygame.draw.rect(DISPLAY_SURFACE, YELLOW, (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2))
 
-def make_move()        
 def handle_movement(player1, player2):
     speed = 3
     delta_x = 0
@@ -159,3 +162,4 @@ def terminate():
     
 if __name__ == '__main__':
     main()
+
