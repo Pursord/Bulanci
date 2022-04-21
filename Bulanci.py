@@ -88,7 +88,7 @@ def main():
                 terminate()
             if event.type == KEYUP:
                 move = handle_key_press(event.key, board)
-            if move is not None and:
+            if move is not None:
                 make_move(bulanek, move)   
         
         pygame.display.update()
