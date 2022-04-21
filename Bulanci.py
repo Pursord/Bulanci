@@ -86,9 +86,14 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
-                
+            if event.type == KEYUP:
+                move = handle_key_press(event.key, board)
+            if move is not None and:
+                make_move(bulanek, move)   
+        
         pygame.display.update()
         FPS_CLOCK.tick(FPS)
+
 
 def draw_tile(row, line, tile_type):
     top, left = (row * TILE_SIZE), (line * TILE_SIZE)
@@ -127,6 +132,7 @@ def draw_bulanek(bulanek):
     if bulanek.player == 2:
         pygame.draw.rect(DISPLAY_SURFACE, YELLOW, (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2))
 
+def make_move()        
 
 def terminate():
     pygame.quit()
