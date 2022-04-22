@@ -83,7 +83,7 @@ def main():
 
     game_map.generate_map(mapa)
     player1 = Bulanek(1, 0, TILE_SIZE*2)
-    player2 = Bulanek(2, (TILE_SIZE*24+1), TILE_SIZE*2)
+    player2 = Bulanek(2, (TILE_SIZE*24), TILE_SIZE*2)
 
     while True:
         draw_map(game_map)
@@ -92,10 +92,6 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
-        if player1.move_speed != 0:
-            player1.move_speed -= 1
-        if player2.move_speed != 0:
-            player2.move_speed -= 1
         handle_movement(player1, player2)
         
         pygame.display.update()
@@ -139,37 +135,78 @@ def draw_bulanek(bulanek):
     if bulanek.player == 2:
         pygame.draw.rect(DISPLAY_SURFACE, YELLOW, (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2))
 
-def handle_movement(player1, player2):
+def check_move(game_map, x, y):
+    line, row = x/TILE_SIZE, y/TILE_SIZE
+    line = round(line)
+    row = round(row)
+    if row >= 0 and line >= 0 and row < 26 and line < 26:
+        if game_map.map[row][line] == "0" or game_map.map[row][line] == "4" or game_map.map[row][line] == "9":
+            return True
+    return False
+
+def handle_movement(game_map, player1, player2):
     speed = TILE_SIZE
+    speed_limit = 2
     keys = pygame.key.get_pressed()
+
+    #handles movement for the 1st player
     if player2.move_speed == 0:
         if keys[pygame.K_UP]:
             player2.direction = UP
-            player2.y_position -= speed
+            y = (player2.y_position - TILE_SIZE)
+            if check_move(game_map, (player2.x_position), y) and check_move(game_map, (player2.x_position + TILE_SIZE), y):
+                player2.y_position -= speed
+                player2.move_speed = speed_limit
         if keys[pygame.K_DOWN]:
             player2.direction = DOWN
-            player2.y_position += speed
+            y = (player2.y_position + TILE_SIZE*2)
+            if check_move(game_map, (player2.x_position), y) and check_move(game_map, (player2.x_position + TILE_SIZE), y):
+                player2.y_position += speed
+                player2.move_speed = speed_limit
         if keys[pygame.K_LEFT]:
-            player2.direction = LEFT
-            player2.x_position -= speed
+            player1.direction = LEFT
+            x = (player2.x_position - TILE_SIZE)
+            if check_move(game_map, x, player2.y_position) and check_move(game_map, x, (player2.y_position + TILE_SIZE)):
+                player2.x_position -= speed
+                player2.move_speed = speed_limit
         if keys[pygame.K_RIGHT]:
-            player2.direction = RIGHT
-            player2.x_position += speed
-        player2.move_speed = 5
+            player1.direction = RIGHT
+            x = (player2.x_position + TILE_SIZE*2)
+            if check_move(game_map, x, player2.y_position) and check_move(game_map, x, (player2.y_position + TILE_SIZE)):
+                player2.x_position += speed
+                player2.move_speed = speed_limit
+    else:
+        player2.move_speed -= 1
+
+    #handles movement for the 2nd player
     if player1.move_speed == 0:
         if keys[pygame.K_w]:
-            player1.direction = UP
-            player1.y_position -= speed
+            player2.direction = UP
+            y = (player1.y_position - TILE_SIZE)
+            if check_move(game_map, (player1.x_position), y) and check_move(game_map, (player1.x_position + TILE_SIZE), y):
+                player1.y_position -= speed
+                player1.move_speed = speed_limit
         if keys[pygame.K_s]:
-            player1.direction = DOWN
-            player1.y_position += speed
+            player2.direction = DOWN
+            y = (player1.y_position + TILE_SIZE*2)
+            if check_move(game_map, (player1.x_position), y) and check_move(game_map, (player1.x_position + TILE_SIZE), y):
+                player1.y_position += speed
+                player1.move_speed = speed_limit
         if keys[pygame.K_a]:
             player1.direction = LEFT
-            player1.x_position -= speed
+            x = (player1.x_position - TILE_SIZE)
+            if check_move(game_map, x, player1.y_position) and check_move(game_map, x, (player1.y_position + TILE_SIZE)):
+                player1.x_position -= speed
+                player1.move_speed = speed_limit
         if keys[pygame.K_d]:
             player1.direction = RIGHT
-            player1.x_position += speed  
-        player1.move_speed = 5
+            x = (player1.x_position + TILE_SIZE*2)
+            if check_move(game_map, x, player1.y_position) and check_move(game_map, x, (player1.y_position + TILE_SIZE)):
+                player1.x_position += speed
+                player1.move_speed = speed_limit
+    else:
+        player1.move_speed -= 1
+        
     pass
 
 def projectile_movment(player1, player2, projectile1, projectile2):
