@@ -140,7 +140,7 @@ def check_move(game_map, x, y):
     line = round(line)
     row = round(row)
     if row >= 0 and line >= 0 and row < 26 and line < 26:
-        if game_map.map[row][line] == "0" or game_map.map[row][line] == "4" or game_map.map[row][line] == "9":
+        if game_map.map[row][line] == "0" or game_map.map[row][line] == "4" or game_map.map[row][line] == "9" or game_map.map[row][line] == "8":
             return True
     return False
 
