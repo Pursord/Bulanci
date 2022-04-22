@@ -18,6 +18,7 @@ GREY = (204, 195, 198)
 YELLOW = (255, 255, 0)
 PINK = (255, 51, 153)
 BROWN = (150, 75, 0)
+GOLD = (212, 175, 55)
 
 #constants for movement
 UP = 'up'
@@ -83,17 +84,36 @@ def main():
 
     game_map.generate_map(mapa)
     player1 = Bulanek(1, 0, TILE_SIZE*2)
-    player2 = Bulanek(2, (TILE_SIZE*24), TILE_SIZE*2)
+    player2 = Bulanek(2, (TILE_SIZE*24+1), TILE_SIZE*2)
+
+    bullets = []
 
     while True:
         draw_map(game_map)
         draw_bulanek(player1)
-        draw_bulanek(player2)        
+        draw_bulanek(player2)
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
-        handle_movement(player1, player2)
+            if event.type == KEYUP and event.key == K_c :
+                bullets.append (Projectile(player1.x_position, player1.y_position, player1.direction))
+            if event.type == KEYUP and event.key == K_l:
+                bullets.append (Projectile(player2.x_position, player2.y_position, player2.direction))
         
+        handle_movement(game_map, player1, player2)
+        for bullet in bullets:
+                                
+            if player1.direction == LEFT:
+                bullet.x -= TILE_SIZE
+            if bullet.direction == RIGHT:
+                bullet.x += TILE_SIZE
+            if player1.direction == UP:
+                bullet.y -= TILE_SIZE
+            if player1.direction == DOWN:
+                bullet.y -= TILE_SIZE
+        
+        draw_bullet(bullets)
+                                
         pygame.display.update()
         FPS_CLOCK.tick(FPS)
 
@@ -135,12 +155,25 @@ def draw_bulanek(bulanek):
     if bulanek.player == 2:
         pygame.draw.rect(DISPLAY_SURFACE, YELLOW, (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2))
 
+def draw_bullet(bullets):
+    for bullet in bullets:
+                                
+            if bullet.direction == LEFT:
+                pygame.draw.rect(DISPLAY_SURFACE, GOLD, (bullet.x, bullet.y, 20, 10))
+            if bullet.direction == RIGHT:
+                pygame.draw.rect(DISPLAY_SURFACE, GOLD, (bullet.x, bullet.y, 20, 10))
+            if bullet.direction == UP:
+                pygame.draw.rect(DISPLAY_SURFACE, GOLD, (bullet.x, bullet.y, 10, 20))
+            if bullet.direction == DOWN:
+                pygame.draw.rect(DISPLAY_SURFACE, GOLD, (bullet.x, bullet.y, 10, 20))
+        
+    
 def check_move(game_map, x, y):
     line, row = x/TILE_SIZE, y/TILE_SIZE
     line = round(line)
     row = round(row)
     if row >= 0 and line >= 0 and row < 26 and line < 26:
-        if game_map.map[row][line] == "0" or game_map.map[row][line] == "4" or game_map.map[row][line] == "9" or game_map.map[row][line] == "8":
+        if game_map.map[row][line] == "0" or game_map.map[row][line] == "4" or game_map.map[row][line] == "9":
             return True
     return False
 
@@ -209,8 +242,9 @@ def handle_movement(game_map, player1, player2):
         
     pass
 
-def projectile_movment(player1, player2, projectile1, projectile2):
+def projectile_movement(player1, player2, projectile1, projectile2):
     speed_p = 100
+    keys = pygame.key.get_pressed()
     if keys[pygame.K_c]:
         if player1.direction == LEFT:
             projectile1.direction = LEFT
@@ -245,4 +279,5 @@ def terminate():
     
 if __name__ == '__main__':
     main()
+
 
