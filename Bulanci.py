@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import sys
 import random
+import time
 
 WINDOW_SIZE = 728
 TILE_SIZE = 28
@@ -88,6 +89,12 @@ def main():
     bullets = []
 
     while True:
+        
+        draw_map(game_map)
+        draw_bulanek(player1)
+        draw_bulanek(player2)
+        draw_bullet(bullets)
+        
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
@@ -97,8 +104,9 @@ def main():
                 bullets.append (Projectile(player2.x_position + TILE_SIZE, player2.y_position + TILE_SIZE, player2.direction))
         
         handle_movement(game_map, player1, player2)
-        
-        for bullet in bullets:                         
+
+        b = 0
+        for bullet in bullets:
             if bullet.direction == LEFT:
                 bullet.x -= TILE_SIZE
             if bullet.direction == RIGHT:
@@ -108,11 +116,18 @@ def main():
             if bullet.direction == DOWN:
                 bullet.y += TILE_SIZE
 
-                
-        draw_map(game_map)
-        draw_bulanek(player1)
-        draw_bulanek(player2)
-        draw_bullet(bullets)
+            if (bullet.direction == UP or bullet.direction == DOWN):
+                if check_hit(game_map, bullet.x - 15, bullet.y) or check_hit(game_map, bullet.x, bullet.y):
+                    check_hit(game_map, bullet.x, bullet.y)
+                    bullets.pop(b)
+            if (bullet.direction == LEFT or bullet.direction == RIGHT):
+                if check_hit(game_map, bullet.x, bullet.y - 15) or check_hit(game_map, bullet.x, bullet.y):
+                    check_hit(game_map, bullet.x, bullet.y)
+                    bullets.pop(b)
+            if player_rect1.colliderect(rect):
+                print ("hit")
+            
+            b += 1
                                 
         pygame.display.update()
         FPS_CLOCK.tick(FPS)
@@ -151,9 +166,11 @@ def draw_map(game_map):
                 
 def draw_bulanek(bulanek):
     if bulanek.player == 1:
-        pygame.draw.rect(DISPLAY_SURFACE, PINK, (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2))
+        player_rect1 = (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2)
+        pygame.draw.rect(DISPLAY_SURFACE, PINK, player_rect1)
     if bulanek.player == 2:
-        pygame.draw.rect(DISPLAY_SURFACE, YELLOW, (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2))
+        player_rect2 = (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2)
+        pygame.draw.rect(DISPLAY_SURFACE, YELLOW, player_rect2)
 
 def draw_bullet(bullets):
     for bullet in bullets:                                
@@ -174,7 +191,19 @@ def draw_bullet(bullets):
                 rect.center = (bullet.x, bullet.y)
                 pygame.draw.rect(DISPLAY_SURFACE, GOLD, rect)
         
-    
+
+def check_hit(game_map, x, y):
+    line, row = x/TILE_SIZE, y/TILE_SIZE
+    line = round(line)
+    row = round(row)
+    if row >= 0 and line >= 0 and row < 26 and line < 26:
+        if game_map.map[row][line] == "2":
+            return True
+        if game_map.map[row][line] == "1":
+            game_map.map[row][line] = "0"
+            return True
+    return False
+
 def check_move(game_map, x, y):
     line, row = x/TILE_SIZE, y/TILE_SIZE
     line = round(line)
