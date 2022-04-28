@@ -2,7 +2,6 @@ import pygame
 from pygame.locals import *
 import sys
 import random
-import time
 
 WINDOW_SIZE = 728
 TILE_SIZE = 28
@@ -53,20 +52,22 @@ class Map:
         given_file.close()
 
 class Bulanek:
-    def __init__(self, player, x, y):
+    def __init__(self, player, x, y, team):
         self.player = player
         self.x_position = x
         self.y_position = y
+        self.team = team
         self.move_speed = 0
         self.reload = 0
         self.health = 3
         self.direction = UP
 
 class Projectile:
-    def __init__(self, x, y, direction):
+    def __init__(self, x, y, direction, team):
         self.x = x
         self.y = y
         self.direction = direction
+        self.team = team
 
 def main():
     global FPS_CLOCK, DISPLAY_SURFACE, BASIC_FONT, BUTTONS
@@ -83,13 +84,16 @@ def main():
     pygame.display.set_caption("Bulanci ale tanci")
 
     game_map.generate_map(mapa)
-    player1 = Bulanek(1, 0, TILE_SIZE*2)
-    player2 = Bulanek(2, (TILE_SIZE*24), TILE_SIZE*2)
+    player1 = Bulanek(1, 0, TILE_SIZE*2, 1)
+    player2 = Bulanek(2, (TILE_SIZE*24), TILE_SIZE*2, 2)
 
     bullets = []
 
     while True:
+
+        key = pygame.key.get_pressed()
         
+        check_game_state(player1, player2)
         draw_map(game_map)
         draw_bulanek(player1)
         draw_bulanek(player2)
@@ -98,10 +102,18 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 terminate()
-            if event.type == KEYUP and event.key == K_c :
-                bullets.append (Projectile(player1.x_position + TILE_SIZE, player1.y_position + TILE_SIZE, player1.direction))
-            if event.type == KEYUP and event.key == K_SLASH :
-                bullets.append (Projectile(player2.x_position + TILE_SIZE, player2.y_position + TILE_SIZE, player2.direction))
+            if player1.reload == 0:
+                if key[K_c]:
+                    bullets.append (Projectile(player1.x_position + TILE_SIZE, player1.y_position + TILE_SIZE, player1.direction, player1.team))
+                    player1.reload = 5
+            else:
+                player1.reload -= 1
+            if player2.reload == 0:                         
+                if key[K_SLASH]: 
+                    bullets.append (Projectile(player2.x_position + TILE_SIZE, player2.y_position + TILE_SIZE, player2.direction, player2.team))
+                    player2.reload = 5
+            else:
+                player2.reload -= 1
         
         handle_movement(game_map, player1, player2)
 
@@ -124,8 +136,14 @@ def main():
                 if check_hit(game_map, bullet.x, bullet.y - 15) or check_hit(game_map, bullet.x, bullet.y):
                     check_hit(game_map, bullet.x, bullet.y)
                     bullets.pop(b)
-            if player_rect1.colliderect(rect):
-                print ("hit")
+            if player_hit(player1, bullet):
+                player1.health -= 1
+                respawn(player1)
+                bullets.pop(b)
+            if player_hit(player2, bullet):
+                player2.health -= 1
+                respawn(player2)
+                bullets.pop(b)
             
             b += 1
                                 
@@ -204,6 +222,11 @@ def check_hit(game_map, x, y):
             return True
     return False
 
+def player_hit(player, bullet):
+    if bullet.x in range(player.x_position, (player.x_position + 3*TILE_SIZE)) and bullet.y in range(player.y_position, (player.y_position + 3*TILE_SIZE)):
+        if bullet.team != player.team:
+            return True
+
 def check_move(game_map, x, y):
     line, row = x/TILE_SIZE, y/TILE_SIZE
     line = round(line)
@@ -278,6 +301,23 @@ def handle_movement(game_map, player1, player2):
         
     pass
 
+def check_game_state(player1, player2):
+    if player1.health == 0:
+        print ("Vyhral 1")
+    if player2.health == 0:
+        print ("Vyhral 2")
+
+def respawn(player):
+    spawn = random.randrange(4)
+    if spawn == 0:
+        player.x_position, player.y_position = 0, TILE_SIZE*2
+    if spawn == 1:
+        player.x_position, player.y_position = (TILE_SIZE*24), TILE_SIZE*2
+    if spawn == 2:
+        player.x_position, player.y_position = 0, (TILE_SIZE*22)
+    if spawn == 3:
+        player.x_position, player.y_position = (TILE_SIZE*24), (TILE_SIZE*22)
+        
 def terminate():
     pygame.quit()
     sys.exit()
