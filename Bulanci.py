@@ -459,7 +459,7 @@ def menu(game_map):
         mouse_clicked = False
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
-                end_game()
+                terminate()
             elif event.type == MOUSEMOTION:
                 mouse_coordinates = event.pos
             elif event.type == MOUSEBUTTONUP:
