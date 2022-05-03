@@ -38,7 +38,7 @@ class Map:
         self.map_height = 26
 
     def generate_map(self, file):
-        given_file = open(file, 'r')
+        given_file = open(f"maps/{file}", 'r')
 
         lines = given_file.readlines()
 
@@ -59,7 +59,7 @@ class Bulanek:
         self.team = team
         self.move_speed = 0
         self.reload = 0
-        self.health = 3
+        self.health = 7
         self.direction = UP
 
 class Projectile:
@@ -131,19 +131,19 @@ def main():
             if (bullet.direction == UP or bullet.direction == DOWN):
                 if check_hit(game_map, bullet.x - 15, bullet.y) or check_hit(game_map, bullet.x, bullet.y):
                     check_hit(game_map, bullet.x, bullet.y)
-                    bullets.pop(b)
+                    remove_bullet(bullets, b)
             if (bullet.direction == LEFT or bullet.direction == RIGHT):
                 if check_hit(game_map, bullet.x, bullet.y - 15) or check_hit(game_map, bullet.x, bullet.y):
                     check_hit(game_map, bullet.x, bullet.y)
-                    bullets.pop(b)
+                    remove_bullet(bullets, b)
             if player_hit(player1, bullet):
                 player1.health -= 1
                 respawn(player1)
-                bullets.pop(b)
+                remove_bullet(bullets, b)
             if player_hit(player2, bullet):
                 player2.health -= 1
                 respawn(player2)
-                bullets.pop(b)
+                remove_bullet(bullets, b)
             
             b += 1
                                 
@@ -155,19 +155,28 @@ def draw_tile(row, line, tile_type):
     top, left = (row * TILE_SIZE), (line * TILE_SIZE)
     if tile_type == "1":
         #type 1 are bricks
-        pygame.draw.rect(DISPLAY_SURFACE, RED, (left, top, TILE_SIZE, TILE_SIZE))
+        image = pygame.image.load("sprites/brick.png")
+        DISPLAY_SURFACE.blit(image, (left, top))
+        pass
     if tile_type == "2":
         #type 2 are undestructible blocks
-        pygame.draw.rect(DISPLAY_SURFACE, GREY, (left, top, TILE_SIZE, TILE_SIZE))
+        image = pygame.image.load("sprites/stone.png")
+        DISPLAY_SURFACE.blit(image, (left, top))
+        pass
     if tile_type == "3":
         #type 3 are blocks where you can not stand
-        pygame.draw.rect(DISPLAY_SURFACE, BRIGHT_BLUE, (left, top, TILE_SIZE, TILE_SIZE))
+        image = pygame.image.load("sprites/water.png")
+        DISPLAY_SURFACE.blit(image, (left, top))
+        pass
     if tile_type == "4":
         #type 4 is a black background
         pygame.draw.rect(DISPLAY_SURFACE, BLACK, (left, top, TILE_SIZE, TILE_SIZE))
+        pass
     if tile_type == "8":
         #type 8 are bridges
-        pygame.draw.rect(DISPLAY_SURFACE, BROWN, (left, top, TILE_SIZE, TILE_SIZE))
+        image = pygame.image.load("sprites/bridge.png")
+        DISPLAY_SURFACE.blit(image, (left, top))
+        pass
     if tile_type == "9":
         #type 9 is a white background
         pygame.draw.rect(DISPLAY_SURFACE, WHITE, (left, top, TILE_SIZE, TILE_SIZE))
@@ -176,7 +185,8 @@ def draw_tile(row, line, tile_type):
         pygame.draw.rect(DISPLAY_SURFACE, DARK_TURQUOISE, (left, top, TILE_SIZE, TILE_SIZE))
         
 def draw_map(game_map):
-    DISPLAY_SURFACE.fill(GREEN)
+    background = pygame.image.load("sprites/background.png")
+    DISPLAY_SURFACE.blit(background, (0 , 0))
     for row in range(game_map.map_height):
         for line in range(game_map.map_width):
             if game_map.map[row][line] != 0:
@@ -184,11 +194,32 @@ def draw_map(game_map):
                 
 def draw_bulanek(bulanek):
     if bulanek.player == 1:
-        player_rect1 = (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2)
-        pygame.draw.rect(DISPLAY_SURFACE, PINK, player_rect1)
+        if bulanek.direction == LEFT:
+            image = pygame.image.load("sprites/bulanek1_left.png")
+            DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
+        if bulanek.direction == RIGHT:
+            image = pygame.image.load("sprites/bulanek1_right.png")
+            DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
+        if bulanek.direction == UP:
+            image = pygame.image.load("sprites/bulanek1_back.png")
+            DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
+        if bulanek.direction == DOWN:
+            image = pygame.image.load("sprites/bulanek1_front.png")
+            DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
+
     if bulanek.player == 2:
-        player_rect2 = (bulanek.x_position, bulanek.y_position, TILE_SIZE*2, TILE_SIZE*2)
-        pygame.draw.rect(DISPLAY_SURFACE, YELLOW, player_rect2)
+        if bulanek.direction == LEFT:
+            image = pygame.image.load("sprites/bulanek2_left.png")
+            DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
+        if bulanek.direction == RIGHT:
+            image = pygame.image.load("sprites/bulanek2_right.png")
+            DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
+        if bulanek.direction == UP:
+            image = pygame.image.load("sprites/bulanek2_back.png")
+            DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
+        if bulanek.direction == DOWN:
+            image = pygame.image.load("sprites/bulanek2_front.png")
+            DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
 
 def draw_bullet(bullets):
     for bullet in bullets:                                
@@ -208,8 +239,11 @@ def draw_bullet(bullets):
                 rect = pygame.Rect(0, 0, 10, 20)
                 rect.center = (bullet.x, bullet.y)
                 pygame.draw.rect(DISPLAY_SURFACE, GOLD, rect)
-        
 
+def remove_bullet(bullets, b):
+    if 0 <= b < len(bullets):
+        bullets.pop(b)
+        
 def check_hit(game_map, x, y):
     line, row = x/TILE_SIZE, y/TILE_SIZE
     line = round(line)
@@ -232,7 +266,22 @@ def check_move(game_map, x, y):
     line = round(line)
     row = round(row)
     if row >= 0 and line >= 0 and row < 26 and line < 26:
-        if game_map.map[row][line] == "0" or game_map.map[row][line] == "4" or game_map.map[row][line] == "9":
+        if game_map.map[row][line] == "0" or game_map.map[row][line] == "4" or game_map.map[row][line] == "9" or game_map.map[row][line] == "8":
+            return True
+    return False
+
+def player_colission(player_m, player_ch):
+    if player_m.direction == UP:
+        if not ((player_m.y_position - TILE_SIZE) in range(player_ch.y_position, (player_ch.y_position + 2*TILE_SIZE)) and player_m.x_position in range(player_ch.x_position, (player_ch.x_position + 2*TILE_SIZE))):
+            return True
+    if player_m.direction == DOWN:
+        if not ((player_m.y_position + 3*TILE_SIZE) in range(player_ch.y_position, (player_ch.y_position + 2*TILE_SIZE)) and player_m.x_position in range(player_ch.x_position, (player_ch.x_position + 2*TILE_SIZE))):
+            return True
+    if player_m.direction == LEFT:
+        if not ((player_m.x_position - TILE_SIZE) in range(player_ch.x_position, (player_ch.x_position + 2*TILE_SIZE)) and player_m.y_position in range(player_ch.y_position, (player_ch.y_position + 2*TILE_SIZE))):
+            return True
+    if player_m.direction == RIGHT:
+        if not ((player_m.x_position + 3*TILE_SIZE) in range(player_ch.x_position, (player_ch.x_position + 2*TILE_SIZE)) and player_m.y_position in range(player_ch.y_position, (player_ch.y_position + 2*TILE_SIZE))):
             return True
     return False
 
@@ -247,26 +296,30 @@ def handle_movement(game_map, player1, player2):
             player2.direction = UP
             y = (player2.y_position - TILE_SIZE)
             if check_move(game_map, (player2.x_position), y) and check_move(game_map, (player2.x_position + TILE_SIZE), y):
-                player2.y_position -= speed
-                player2.move_speed = speed_limit
+                if player_colission(player1, player2):
+                    player2.y_position -= speed
+                    player2.move_speed = speed_limit
         if keys[pygame.K_DOWN]:
             player2.direction = DOWN
             y = (player2.y_position + TILE_SIZE*2)
             if check_move(game_map, (player2.x_position), y) and check_move(game_map, (player2.x_position + TILE_SIZE), y):
-                player2.y_position += speed
-                player2.move_speed = speed_limit
+                if player_colission(player1, player2):
+                    player2.y_position += speed
+                    player2.move_speed = speed_limit
         if keys[pygame.K_LEFT]:
             player2.direction = LEFT
             x = (player2.x_position - TILE_SIZE)
             if check_move(game_map, x, player2.y_position) and check_move(game_map, x, (player2.y_position + TILE_SIZE)):
-                player2.x_position -= speed
-                player2.move_speed = speed_limit
+                if player_colission(player1, player2):
+                    player2.x_position -= speed
+                    player2.move_speed = speed_limit
         if keys[pygame.K_RIGHT]:
             player2.direction = RIGHT
             x = (player2.x_position + TILE_SIZE*2)
             if check_move(game_map, x, player2.y_position) and check_move(game_map, x, (player2.y_position + TILE_SIZE)):
-                player2.x_position += speed
-                player2.move_speed = speed_limit
+                if player_colission(player1, player2):
+                    player2.x_position += speed
+                    player2.move_speed = speed_limit
     else:
         player2.move_speed -= 1
 
@@ -276,26 +329,30 @@ def handle_movement(game_map, player1, player2):
             player1.direction = UP
             y = (player1.y_position - TILE_SIZE)
             if check_move(game_map, (player1.x_position), y) and check_move(game_map, (player1.x_position + TILE_SIZE), y):
-                player1.y_position -= speed
-                player1.move_speed = speed_limit
+                if player_colission(player2, player1):
+                    player1.y_position -= speed
+                    player1.move_speed = speed_limit
         if keys[pygame.K_s]:
             player1.direction = DOWN
             y = (player1.y_position + TILE_SIZE*2)
             if check_move(game_map, (player1.x_position), y) and check_move(game_map, (player1.x_position + TILE_SIZE), y):
-                player1.y_position += speed
-                player1.move_speed = speed_limit
+                if player_colission(player2, player1):
+                    player1.y_position += speed
+                    player1.move_speed = speed_limit
         if keys[pygame.K_a]:
             player1.direction = LEFT
             x = (player1.x_position - TILE_SIZE)
             if check_move(game_map, x, player1.y_position) and check_move(game_map, x, (player1.y_position + TILE_SIZE)):
-                player1.x_position -= speed
-                player1.move_speed = speed_limit
+                if player_colission(player2, player1):
+                    player1.x_position -= speed
+                    player1.move_speed = speed_limit
         if keys[pygame.K_d]:
             player1.direction = RIGHT
             x = (player1.x_position + TILE_SIZE*2)
             if check_move(game_map, x, player1.y_position) and check_move(game_map, x, (player1.y_position + TILE_SIZE)):
-                player1.x_position += speed
-                player1.move_speed = speed_limit
+                if player_colission(player2, player1):
+                    player1.x_position += speed
+                    player1.move_speed = speed_limit
     else:
         player1.move_speed -= 1
         
