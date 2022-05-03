@@ -6,6 +6,8 @@ import random
 WINDOW_SIZE = 728
 TILE_SIZE = 28
 FPS = 30
+BUTTON_SIZE = TILE_SIZE * 2
+GAP_SIZE = 16
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -18,6 +20,12 @@ YELLOW = (255, 255, 0)
 PINK = (255, 51, 153)
 BROWN = (150, 75, 0)
 GOLD = (212, 175, 55)
+NAVYBLUE = (60, 60, 100)
+BLUE = (0, 0, 255)
+
+BGCOLOR = BLACK
+HIGHLIGHTCOLOR = BLUE
+TEXTCOLOR = WHITE
 
 #constants for movement
 UP = 'up'
@@ -72,10 +80,12 @@ class Projectile:
 def main():
     global FPS_CLOCK, DISPLAY_SURFACE, BASIC_FONT, BUTTONS
 
+    """
     choice = input("Kterou mapu chcete hrat?")
     if not choice:
         choice = "Deadly_garden"
     mapa = choice + ".txt"
+    """
     
     pygame.init()
     game_map = Map()
@@ -83,6 +93,7 @@ def main():
     DISPLAY_SURFACE = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
     pygame.display.set_caption("Bulanci ale tanci")
 
+    mapa = menu(game_map)
     game_map.generate_map(mapa)
     player1 = Bulanek(1, 0, TILE_SIZE*2, 1)
     player2 = Bulanek(2, (TILE_SIZE*24), TILE_SIZE*2, 2)
@@ -92,7 +103,9 @@ def main():
     while True:
 
         key = pygame.key.get_pressed()
-        
+        if check_game_state(player1, player2) is not None:
+            win = check_game_state(player1, player2)
+            end_screen(game_map, win)
         check_game_state(player1, player2)
         draw_map(game_map)
         draw_bulanek(player1)
@@ -174,7 +187,7 @@ def draw_tile(row, line, tile_type):
         pass
     if tile_type == "8":
         #type 8 are bridges
-        image = pygame.image.load("sprites/bridge.png")
+        image = pygame.image.load("sprites/wood.png")
         DISPLAY_SURFACE.blit(image, (left, top))
         pass
     if tile_type == "9":
@@ -360,9 +373,11 @@ def handle_movement(game_map, player1, player2):
 
 def check_game_state(player1, player2):
     if player1.health == 0:
-        print ("Vyhral 1")
+        win = "Player 2"
+        return win
     if player2.health == 0:
-        print ("Vyhral 2")
+        win = "Player 1"
+        return win
 
 def respawn(player):
     spawn = random.randrange(4)
@@ -374,10 +389,133 @@ def respawn(player):
         player.x_position, player.y_position = 0, (TILE_SIZE*22)
     if spawn == 3:
         player.x_position, player.y_position = (TILE_SIZE*24), (TILE_SIZE*22)
+
+
+
+def end_screen(game_map, player):
+    mouse_coordinates = None
+    font = pygame.font.Font('freesansbold.ttf', 30)
+    font_big = pygame.font.Font('freesansbold.ttf', 40)
+    mouse_coordinates = 0, 0
+
+    while True:
+        DISPLAY_SURFACE.fill(BGCOLOR)
         
+        mouse_clicked = False
+        for event in pygame.event.get():
+            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                terminate()
+            elif event.type == MOUSEMOTION:
+                mouse_coordinates = event.pos
+            elif event.type == MOUSEBUTTONUP:
+                mouse_coordinates = event.pos
+                mouse_clicked = True
+                    
+        if mouse_coordinates is not None:
+            x, y = mouse_coordinates
+                
+
+        if (200 + BUTTON_SIZE) >= x >= 200 and (400 + BUTTON_SIZE) >= y >= 400:
+            pygame.draw.rect(DISPLAY_SURFACE, HIGHLIGHTCOLOR, (200 - GAP_SIZE / 2, 400 - GAP_SIZE / 2, BUTTON_SIZE + GAP_SIZE, BUTTON_SIZE + GAP_SIZE))
+        elif 528 >= x >= (528 - BUTTON_SIZE) and (400 + BUTTON_SIZE) >= y >= 400:
+            pygame.draw.rect(DISPLAY_SURFACE, HIGHLIGHTCOLOR, (528 - BUTTON_SIZE - GAP_SIZE / 2, 400 - GAP_SIZE / 2, BUTTON_SIZE + GAP_SIZE, BUTTON_SIZE + GAP_SIZE))
+                
+        pygame.draw.rect(DISPLAY_SURFACE, GREEN, (200, 400, BUTTON_SIZE, BUTTON_SIZE))
+        pygame.draw.rect(DISPLAY_SURFACE, RED, (528 - BUTTON_SIZE, 400, BUTTON_SIZE, BUTTON_SIZE))
+
+        text_surface_object = font_big.render("Congratulations, " + player + "!", True, TEXTCOLOR)
+        text_rect_object = text_surface_object.get_rect()
+        text_rect_object.center = (362, 100)
+        DISPLAY_SURFACE.blit(text_surface_object, text_rect_object)
+        text_surface_object2 = font_big.render("You won the game!", True, TEXTCOLOR)
+        text_rect_object2 = text_surface_object2.get_rect()
+        text_rect_object2.center = (362, 200)
+        DISPLAY_SURFACE.blit(text_surface_object2, text_rect_object2)
+        text_surface_object3 = font_big.render("Would you like to play again?", True, TEXTCOLOR)
+        text_rect_object3 = text_surface_object3.get_rect()
+        text_rect_object3.center = (362, 300)
+        DISPLAY_SURFACE.blit(text_surface_object3, text_rect_object3)
+
+                
+        if mouse_clicked:
+            x, y = mouse_coordinates 
+            if x and y is not None:
+                if (200 + BUTTON_SIZE) >= x >= 200 and (400 + BUTTON_SIZE) >= y >= 400:
+                    main()
+                    return
+                elif 528 >= x >= (528 - BUTTON_SIZE) and (400 + BUTTON_SIZE) >= y >= 400:
+                    terminate()
+
+        pygame.display.update()
+        FPS_CLOCK.tick(FPS)
+
+
+def menu(game_map):
+    font = pygame.font.Font('freesansbold.ttf', 30)
+    font_big = pygame.font.Font('freesansbold.ttf', 45)
+    mouse_coordinates = 0, 0
+    while True:
+        DISPLAY_SURFACE.fill(BGCOLOR)
+        mouse_clicked = False
+        for event in pygame.event.get():
+            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                end_game()
+            elif event.type == MOUSEMOTION:
+                mouse_coordinates = event.pos
+            elif event.type == MOUSEBUTTONUP:
+                mouse_coordinates = event.pos
+                mouse_clicked = True              
+        x, y = mouse_coordinates 
+        if mouse_clicked:
+            file_name = ["board.txt", "Bulanek_factory.txt", "Deadly_garden.txt", "intergalaxial_spaceship.txt", "Mysterious_island.txt", "Secret_laboratory.txt"]
+            for number, name in enumerate(file_name):
+                if (100 + 528) >= x >= 100 and (250 - (BUTTON_SIZE / 2) + (number * (GAP_SIZE + BUTTON_SIZE))) + BUTTON_SIZE >= y >= 250 - (BUTTON_SIZE / 2) + (number * (GAP_SIZE + BUTTON_SIZE)):
+                    return name
+        
+        for number in  range(6):
+            if (100 + 528) >= x >= 100 and (250 - (BUTTON_SIZE / 2) + (number * (GAP_SIZE + BUTTON_SIZE))) + BUTTON_SIZE >= y >= 250 - (BUTTON_SIZE / 2) + (number * (GAP_SIZE + BUTTON_SIZE)):
+                pygame.draw.rect(DISPLAY_SURFACE, HIGHLIGHTCOLOR, (100 -  GAP_SIZE / 2, 250 - (BUTTON_SIZE / 2) + (number * (GAP_SIZE + BUTTON_SIZE)) -  GAP_SIZE / 2, 528 + GAP_SIZE, BUTTON_SIZE + GAP_SIZE))
+
+        """
+        if (100 + 528) >= x >= 100 and (250 - (BUTTON_SIZE / 2) + BUTTON_SIZE) >= y >= 250 - (BUTTON_SIZE / 2):
+            pygame.draw.rect(DISPLAY_SURFACE, HIGHLIGHTCOLOR, (100 -  GAP_SIZE / 4, 250 - (BUTTON_SIZE / 2) -  GAP_SIZE / 4, 528 + GAP_SIZE / 2, BUTTON_SIZE + GAP_SIZE / 2))
+        elif (340 + BUTTON_SIZE) >= x >= 340 and (220 + BUTTON_SIZE) >= y >= BUTTON_SIZE:
+            pygame.draw.rect(DISPLAY_SURFACE, HIGHLIGHTCOLOR, (334, 214, BUTTON_SIZE, BUTTON_SIZE + 12))
+        """
+        
+        text_surface_object = font_big.render("BULANCI,", True, TEXTCOLOR)
+        text_rect_object = text_surface_object.get_rect()
+        text_rect_object.center = (362, 80)
+        DISPLAY_SURFACE.blit(text_surface_object, text_rect_object)
+        
+        text_surface_object2 = font_big.render("ANEB TANKY V PREVLECENI", True, TEXTCOLOR)
+        text_rect_object2 = text_surface_object2.get_rect()
+        text_rect_object2.center = (362, 130)
+        DISPLAY_SURFACE.blit(text_surface_object2, text_rect_object2)
+
+        text_surface_object3 = font.render("Choose a map:", True, TEXTCOLOR)
+        text_rect_object3 = text_surface_object3.get_rect()
+        text_rect_object3.center = (362, 190)
+        DISPLAY_SURFACE.blit(text_surface_object3, text_rect_object3)        
+            
+        maps = ["Board", "Bulanek factory", "Deadly garden", "Intergalaxial spaceship", "Mysterious island", "Secret laboratory"]
+        for number, name in enumerate(maps):
+            pygame.draw.rect(DISPLAY_SURFACE, NAVYBLUE, (100, 250 - (BUTTON_SIZE / 2) + (number * (GAP_SIZE + BUTTON_SIZE)), 528, BUTTON_SIZE))
+            text_surface_object = font.render(f"{name}", True, TEXTCOLOR)
+            text_rect_object = text_surface_object.get_rect()
+            text_rect_object.center = (362, 250 + (number * (GAP_SIZE + BUTTON_SIZE)))
+            DISPLAY_SURFACE.blit(text_surface_object, text_rect_object)
+
+
+        pygame.display.update()
+        FPS_CLOCK.tick(FPS)
+
+
+
 def terminate():
     pygame.quit()
     sys.exit()
     
 if __name__ == '__main__':
     main()
+
