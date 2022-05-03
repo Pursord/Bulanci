@@ -187,7 +187,7 @@ def draw_tile(row, line, tile_type):
         pass
     if tile_type == "8":
         #type 8 are bridges
-        image = pygame.image.load("sprites/wood.png")
+        image = pygame.image.load("sprites/bridge.png")
         DISPLAY_SURFACE.blit(image, (left, top))
         pass
     if tile_type == "9":
