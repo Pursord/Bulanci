@@ -27,6 +27,12 @@ BGCOLOR = BLACK
 HIGHLIGHTCOLOR = BLUE
 TEXTCOLOR = WHITE
 
+brick = pygame.image.load("sprites/brick.png")
+stone = pygame.image.load("sprites/stone.png")
+bridge = pygame.image.load("sprites/bridge.png")
+water = pygame.image.load("sprites/water.png")
+
+
 #constants for movement
 UP = 'up'
 DOWN = 'down'
@@ -79,13 +85,6 @@ class Projectile:
 
 def main():
     global FPS_CLOCK, DISPLAY_SURFACE, BASIC_FONT, BUTTONS
-
-    """
-    choice = input("Kterou mapu chcete hrat?")
-    if not choice:
-        choice = "Deadly_garden"
-    mapa = choice + ".txt"
-    """
     
     pygame.init()
     game_map = Map()
@@ -114,7 +113,7 @@ def main():
         
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
-                terminate()
+                end_screen(game_map, "Pressed Esc")
             if player1.reload == 0:
                 if key[K_c]:
                     bullets.append (Projectile(player1.x_position + TILE_SIZE, player1.y_position + TILE_SIZE, player1.direction, player1.team))
@@ -168,18 +167,15 @@ def draw_tile(row, line, tile_type):
     top, left = (row * TILE_SIZE), (line * TILE_SIZE)
     if tile_type == "1":
         #type 1 are bricks
-        image = pygame.image.load("sprites/brick.png")
-        DISPLAY_SURFACE.blit(image, (left, top))
+        DISPLAY_SURFACE.blit(brick, (left, top))
         pass
     if tile_type == "2":
         #type 2 are undestructible blocks
-        image = pygame.image.load("sprites/stone.png")
-        DISPLAY_SURFACE.blit(image, (left, top))
+        DISPLAY_SURFACE.blit(stone, (left, top))
         pass
     if tile_type == "3":
         #type 3 are blocks where you can not stand
-        image = pygame.image.load("sprites/water.png")
-        DISPLAY_SURFACE.blit(image, (left, top))
+        DISPLAY_SURFACE.blit(water, (left, top))
         pass
     if tile_type == "4":
         #type 4 is a black background
@@ -187,8 +183,7 @@ def draw_tile(row, line, tile_type):
         pass
     if tile_type == "8":
         #type 8 are bridges
-        image = pygame.image.load("sprites/bridge.png")
-        DISPLAY_SURFACE.blit(image, (left, top))
+        DISPLAY_SURFACE.blit(bridge, (left, top))
         pass
     if tile_type == "9":
         #type 9 is a white background
@@ -467,7 +462,7 @@ def menu(game_map):
                 mouse_clicked = True              
         x, y = mouse_coordinates 
         if mouse_clicked:
-            file_name = ["board.txt", "Bulanek_factory.txt", "Deadly_garden.txt", "intergalaxial_spaceship.txt", "Mysterious_island.txt", "Secret_laboratory.txt"]
+            file_name = ["Brick_construction.txt", "Bulanek_factory.txt", "Deadly_garden.txt", "intergalaxial_spaceship.txt", "Mysterious_island.txt", "Secret_laboratory.txt"]
             for number, name in enumerate(file_name):
                 if (100 + 528) >= x >= 100 and (250 - (BUTTON_SIZE / 2) + (number * (GAP_SIZE + BUTTON_SIZE))) + BUTTON_SIZE >= y >= 250 - (BUTTON_SIZE / 2) + (number * (GAP_SIZE + BUTTON_SIZE)):
                     return name
@@ -498,7 +493,7 @@ def menu(game_map):
         text_rect_object3.center = (362, 190)
         DISPLAY_SURFACE.blit(text_surface_object3, text_rect_object3)        
             
-        maps = ["Board", "Bulanek factory", "Deadly garden", "Intergalaxial spaceship", "Mysterious island", "Secret laboratory"]
+        maps = ["Brick construction", "Bulanek factory", "Deadly garden", "Intergalaxial spaceship", "Mysterious island", "Secret laboratory"]
         for number, name in enumerate(maps):
             pygame.draw.rect(DISPLAY_SURFACE, NAVYBLUE, (100, 250 - (BUTTON_SIZE / 2) + (number * (GAP_SIZE + BUTTON_SIZE)), 528, BUTTON_SIZE))
             text_surface_object = font.render(f"{name}", True, TEXTCOLOR)
@@ -518,4 +513,3 @@ def terminate():
     
 if __name__ == '__main__':
     main()
-
