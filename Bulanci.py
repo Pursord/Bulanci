@@ -162,20 +162,22 @@ def main():
         pygame.display.update()
         FPS_CLOCK.tick(FPS)
 
-
 def draw_tile(row, line, tile_type):
     top, left = (row * TILE_SIZE), (line * TILE_SIZE)
     if tile_type == "1":
         #type 1 are bricks
-        DISPLAY_SURFACE.blit(brick, (left, top))
+        image = pygame.image.load("sprites2/brick.PNG")
+        DISPLAY_SURFACE.blit(image, (left, top))
         pass
     if tile_type == "2":
         #type 2 are undestructible blocks
-        DISPLAY_SURFACE.blit(stone, (left, top))
+        image = pygame.image.load("sprites2/stone.PNG")
+        DISPLAY_SURFACE.blit(image, (left, top))
         pass
     if tile_type == "3":
         #type 3 are blocks where you can not stand
-        DISPLAY_SURFACE.blit(water, (left, top))
+        image = pygame.image.load("sprites2/water.PNG")
+        DISPLAY_SURFACE.blit(image, (left, top))
         pass
     if tile_type == "4":
         #type 4 is a black background
@@ -183,7 +185,8 @@ def draw_tile(row, line, tile_type):
         pass
     if tile_type == "8":
         #type 8 are bridges
-        DISPLAY_SURFACE.blit(bridge, (left, top))
+        image = pygame.image.load("sprites2/wood.PNG")
+        DISPLAY_SURFACE.blit(image, (left, top))
         pass
     if tile_type == "9":
         #type 9 is a white background
@@ -191,9 +194,9 @@ def draw_tile(row, line, tile_type):
     if tile_type == "5":
         #type 5 are teleporters
         pygame.draw.rect(DISPLAY_SURFACE, DARK_TURQUOISE, (left, top, TILE_SIZE, TILE_SIZE))
-        
+   
 def draw_map(game_map):
-    background = pygame.image.load("sprites/background.png")
+    background = pygame.image.load("sprites2/background.png")
     DISPLAY_SURFACE.blit(background, (0 , 0))
     for row in range(game_map.map_height):
         for line in range(game_map.map_width):
@@ -203,30 +206,30 @@ def draw_map(game_map):
 def draw_bulanek(bulanek):
     if bulanek.player == 1:
         if bulanek.direction == LEFT:
-            image = pygame.image.load("sprites/bulanek1_left.png")
+            image = pygame.image.load("sprites2/bulanek1_left.png")
             DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
         if bulanek.direction == RIGHT:
-            image = pygame.image.load("sprites/bulanek1_right.png")
+            image = pygame.image.load("sprites2/bulanek1_right.png")
             DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
         if bulanek.direction == UP:
-            image = pygame.image.load("sprites/bulanek1_back.png")
+            image = pygame.image.load("sprites2/bulanek1_back.png")
             DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
         if bulanek.direction == DOWN:
-            image = pygame.image.load("sprites/bulanek1_front.png")
+            image = pygame.image.load("sprites2/bulanek1_front.png")
             DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
 
     if bulanek.player == 2:
         if bulanek.direction == LEFT:
-            image = pygame.image.load("sprites/bulanek2_left.png")
+            image = pygame.image.load("sprites2/bulanek2_left.png")
             DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
         if bulanek.direction == RIGHT:
-            image = pygame.image.load("sprites/bulanek2_right.png")
+            image = pygame.image.load("sprites2/bulanek2_right.png")
             DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
         if bulanek.direction == UP:
-            image = pygame.image.load("sprites/bulanek2_back.png")
+            image = pygame.image.load("sprites2/bulanek2_back.png")
             DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
         if bulanek.direction == DOWN:
-            image = pygame.image.load("sprites/bulanek2_front.png")
+            image = pygame.image.load("sprites2/bulanek2_front.png")
             DISPLAY_SURFACE.blit(image, (bulanek.x_position, bulanek.y_position))
 
 def draw_bullet(bullets):
@@ -415,8 +418,11 @@ def end_screen(game_map, player):
         elif 528 >= x >= (528 - BUTTON_SIZE) and (400 + BUTTON_SIZE) >= y >= 400:
             pygame.draw.rect(DISPLAY_SURFACE, HIGHLIGHTCOLOR, (528 - BUTTON_SIZE - GAP_SIZE / 2, 400 - GAP_SIZE / 2, BUTTON_SIZE + GAP_SIZE, BUTTON_SIZE + GAP_SIZE))
                 
-        pygame.draw.rect(DISPLAY_SURFACE, GREEN, (200, 400, BUTTON_SIZE, BUTTON_SIZE))
-        pygame.draw.rect(DISPLAY_SURFACE, RED, (528 - BUTTON_SIZE, 400, BUTTON_SIZE, BUTTON_SIZE))
+        image = pygame.image.load("sprites2/yes.PNG")
+        DISPLAY_SURFACE.blit(image, (200, 400))
+        
+        image = pygame.image.load("sprites2/no.PNG")
+        DISPLAY_SURFACE.blit(image, (528 - BUTTON_SIZE, 400)) 
 
         text_surface_object = font_big.render("Congratulations, " + player + "!", True, TEXTCOLOR)
         text_rect_object = text_surface_object.get_rect()
